@@ -68,6 +68,12 @@ export const login = async (req, res) => {
     },
   })
 
+  if (!user) {
+    return res
+      .status(404)
+      .json({ data: false, success: false, message: 'No existe el usuario' })
+  }
+
   const matchPassword = await verifyPassword(password, user.password)
 
   if (email === user.email && matchPassword) {
