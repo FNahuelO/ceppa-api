@@ -10,18 +10,7 @@ import './config/sequelize.js'
 
 export const app = express()
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname)
-
-const imagesDirectory = path.join(__dirname, '/images')
-
-app.use(
-  fileUpload({
-    useTempFiles: true,
-    tempFileDir: `${__dirname}/uploads`,
-  }),
-)
-
-//app.use('/images', express.static(imagesDirectory))
+app.use(fileUpload())
 
 app.use(express.json())
 
