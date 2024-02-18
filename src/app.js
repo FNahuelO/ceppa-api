@@ -17,11 +17,11 @@ const imagesDirectory = path.join(__dirname, '/images')
 app.use(
   fileUpload({
     useTempFiles: true,
-    tempFileDir: './uploads',
+    tempFileDir: `${__dirname}/uploads`,
   }),
 )
 
-app.use('/images', express.static(imagesDirectory))
+//app.use('/images', express.static(imagesDirectory))
 
 app.use(express.json())
 

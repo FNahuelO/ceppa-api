@@ -12,7 +12,6 @@ cloudinary.config({
 })
 
 export async function uploadImage(image) {
-  console.log('IMAGE', image)
   try {
     // Verificar que el objeto de imagen tenga los datos necesarios
     if (!image || !image.data) {
