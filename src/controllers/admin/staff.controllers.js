@@ -3,10 +3,8 @@ import Staff from '../../models/Staff.js'
 
 export const addStaff = async (req, res) => {
   const { name, description, speciality, type } = req.body
-  console.log(req.body)
   try {
     const image = await uploadImage(req.files['image'])
-    console.log(image)
     if (image) {
       await Staff.create({
         name,

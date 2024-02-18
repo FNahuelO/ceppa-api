@@ -14,17 +14,29 @@ cloudinary.config({
 export async function uploadImage(image) {
   try {
     // Verificar que el objeto de imagen tenga los datos necesarios
-    if (!image || !image.data) {
-      return false
+    if (!image || !image.data || !image.name) {
+      throw new Error('Datos de imagen inválidos')
     }
 
-    // Subir la imagen a Cloudinary
-    const result = await cloudinary.uploader.upload(image.tempFilePath, {
-      public_id: image.name,
-    })
+    return new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: 'image',
+          public_id: image.name,
+        },
+        (error, result) => {
+          if (error) {
+            console.error('Error al subir la imagen a Cloudinary:', error)
+            reject(error)
+          } else {
+            console.log('Imagen subida a Cloudinary:', result)
+            resolve(result.secure_url)
+          }
+        },
+      )
 
-    // Devolver la URL de la imagen cargada
-    return result.secure_url
+      uploadStream.end(image.data)
+    })
   } catch (error) {
     console.error('Error al cargar la imagen:', error)
     return false
