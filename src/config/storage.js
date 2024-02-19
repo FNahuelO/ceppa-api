@@ -6,6 +6,7 @@ import {
 import { config } from 'dotenv'
 import fs from 'fs'
 import path from 'path'
+import { Readable } from 'stream'
 
 config()
 
@@ -20,18 +21,23 @@ const s3 = new S3Client({
 })
 
 export const uploadFile = async (file) => {
-  const stream = fs.createReadStream(file.tempFilePath)
-
   const params = {
     Bucket: 'ceppa-storage',
     Key: file.name,
-    Body: stream,
+    Body: file.data, // Pasar el stream directamente como el cuerpo del objeto
     ContentType: 'application/pdf',
+    ACL: 'public-read',
   }
 
   const command = new PutObjectCommand(params)
-  const data = await s3.send(command)
-  return data
+
+  try {
+    const data = await s3.send(command)
+    return data
+  } catch (error) {
+    console.error('Error al subir el archivo:', error)
+    throw error
+  }
 }
 
 export const readFile = async (file) => {

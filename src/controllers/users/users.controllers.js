@@ -100,6 +100,7 @@ export const getAllFilesFromS3 = async (req, res) => {
   try {
     // Utiliza el método listObjects para obtener la lista de objetos en el bucket
     const data = await s3.listObjects(params).promise()
+    console.log(data)
 
     // Extrae los nombres de los archivos de la respuesta
     const fileNames = data.Contents.map((object) => object.Key)

@@ -1,9 +1,10 @@
-import Staff from '../../models/Staff.js'
 import path from 'path'
 import { uploadImage } from '../../config/cloudinary.js'
 import { readFile, uploadFile } from '../../config/storage.js'
 import { downloadFile, verifyFile } from '../../helpers/index.js'
 import Magazine from '../../models/Magazine.js'
+
+const { AWS_BASE_URL } = process.env
 
 export const addMagazine = async (req, res) => {
   const { title } = req.body
@@ -11,12 +12,13 @@ export const addMagazine = async (req, res) => {
   try {
     const archive = req.files['archive']
     const response = await uploadFile(archive)
+    console.log(response)
     const image = await uploadImage(req.files['image'])
     if (image && response) {
       await Magazine.create({
         title,
         image,
-        archive: archive.name,
+        archive: `${AWS_BASE_URL}${archive.name}`,
       })
     }
 
