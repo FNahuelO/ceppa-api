@@ -42,3 +42,14 @@ export async function uploadImage(image) {
     return false
   }
 }
+
+export const deleteFileCloudinary = async (name) => {
+  console.log(name)
+  try {
+    const result = await cloudinary.uploader.destroy(name)
+    console.log('Archivo eliminado correctamente', result)
+  } catch (error) {
+    console.error('Error al eliminar el archivo:', error)
+    throw error
+  }
+}

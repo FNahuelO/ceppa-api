@@ -1,12 +1,12 @@
 import {
   GetObjectCommand,
   PutObjectCommand,
+  DeleteObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3'
 import { config } from 'dotenv'
 import fs from 'fs'
 import path from 'path'
-import { Readable } from 'stream'
 
 config()
 
@@ -39,7 +39,22 @@ export const uploadFile = async (file) => {
     throw error
   }
 }
+export const deleteFileStorage = async (name) => {
+  console.log(name)
+  const params = {
+    Bucket: 'ceppa-storage',
+    Key: name,
+  }
 
+  try {
+    // Ejecuta el comando para eliminar el objeto de S3
+    await s3.send(new DeleteObjectCommand(params))
+    console.log('Archivo eliminado correctamente')
+  } catch (error) {
+    console.error('Error al eliminar el archivo:', error)
+    throw error
+  }
+}
 export const readFile = async (file) => {
   const params = {
     Bucket: 'ceppa-storage',

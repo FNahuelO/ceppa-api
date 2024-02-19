@@ -1,7 +1,5 @@
-import path from 'path'
-import { uploadImage } from '../../config/cloudinary.js'
-import { readFile, uploadFile } from '../../config/storage.js'
-import { downloadFile, verifyFile } from '../../helpers/index.js'
+import { deleteFileCloudinary, uploadImage } from '../../config/cloudinary.js'
+import { deleteFileStorage, uploadFile } from '../../config/storage.js'
 import Magazine from '../../models/Magazine.js'
 
 const { AWS_BASE_URL } = process.env
@@ -11,14 +9,17 @@ export const addMagazine = async (req, res) => {
 
   try {
     const archive = req.files['archive']
+    const currentImage = req.files['image']
     const response = await uploadFile(archive)
     console.log(response)
-    const image = await uploadImage(req.files['image'])
+    const image = await uploadImage(currentImage)
     if (image && response) {
       await Magazine.create({
         title,
-        image,
+        imageUrl: image,
+        imageName: currentImage.name,
         archive: `${AWS_BASE_URL}${archive.name}`,
+        name: archive.name,
       })
     }
 
@@ -29,35 +30,6 @@ export const addMagazine = async (req, res) => {
     })
   } catch (error) {
     console.error('Error al agregar la revista:', error)
-    return res.status(500).json({ error: 'Error en el servidor.' })
-  }
-}
-
-export const getFile = async (req, res) => {
-  const { name } = req.query
-
-  const __dirname = path.dirname(new URL(import.meta.url).pathname)
-  const rootDir = path.join(__dirname, '../..')
-  const scriptDirectory = path.join(rootDir, '/assets')
-  const filePath = path.join(scriptDirectory, 'docs', name)
-
-  try {
-    const verify = await verifyFile(name)
-    console.log(verify)
-    if (!verify) {
-      await readFile(name)
-      setTimeout(async () => {
-        const arrayBuffer = await downloadFile(filePath)
-        console.log(arrayBuffer)
-        res.send(Buffer.from(arrayBuffer))
-      }, 1000)
-    } else {
-      const arrayBuffer = await downloadFile(filePath)
-
-      res.send(Buffer.from(arrayBuffer))
-    }
-  } catch (error) {
-    console.error('Error al traer el archivo:', error)
     return res.status(500).json({ error: 'Error en el servidor.' })
   }
 }
@@ -93,7 +65,8 @@ export const editMagazine = async (req, res) => {
       const response = await uploadFile(archive)
       const image = await uploadImage(req.files['image'])
       if (image) {
-        magazine.image = image
+        magazine.imageUrl = image
+        magazine.imageName = req.files['image']?.name
         magazine.archive = archive.name
       } else {
         return res.status(500).json({ error: 'Error al cargar la imagen.' })
@@ -123,6 +96,10 @@ export const deleteMagazine = async (req, res) => {
     if (!magazine) {
       return res.status(404).json({ error: 'Revista no encontrada' })
     }
+
+    await deleteFileCloudinary(magazine.imageName)
+
+    await deleteFileStorage(magazine.name)
 
     await magazine.destroy()
 

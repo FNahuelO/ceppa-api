@@ -1,4 +1,4 @@
-import { uploadImage } from '../../config/cloudinary.js'
+import { deleteFileCloudinary, uploadImage } from '../../config/cloudinary.js'
 import Staff from '../../models/Staff.js'
 
 export const addStaff = async (req, res) => {
@@ -10,7 +10,8 @@ export const addStaff = async (req, res) => {
         name,
         speciality,
         description,
-        image,
+        imageUrl: image,
+        imageName: req.files['image']?.name,
         type,
       })
     }
@@ -41,7 +42,8 @@ export const editStaff = async (req, res) => {
     if (req.files && req.files['image']) {
       const image = await uploadImage(req.files['image'])
       if (image) {
-        staff.image = image
+        staff.imageUrl = image
+        staff.imageName = req.files['image']?.name
       } else {
         return res.status(500).json({ error: 'Error al cargar la imagen.' })
       }
@@ -73,6 +75,8 @@ export const deleteStaff = async (req, res) => {
     if (!usuario) {
       return res.status(404).json({ error: 'Usuario no encontrado' })
     }
+
+    await deleteFileCloudinary(usuario.imageName)
 
     await usuario.destroy()
 

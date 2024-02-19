@@ -11,11 +11,19 @@ const Magazine = sequelize.define('Magazine', {
     type: STRING,
     allowNull: false,
   },
-  image: {
+  imageUrl: {
+    type: STRING,
+    allowNull: false,
+  },
+  imageName: {
     type: STRING,
     allowNull: false,
   },
   archive: {
+    type: STRING,
+    allowNull: false,
+  },
+  name: {
     type: STRING,
     allowNull: false,
   },

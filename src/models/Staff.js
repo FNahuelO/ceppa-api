@@ -19,7 +19,11 @@ const Staff = sequelize.define('Staff', {
     type: STRING,
     allowNull: false,
   },
-  image: {
+  imageUrl: {
+    type: STRING,
+    allowNull: false,
+  },
+  imageName: {
     type: STRING,
     allowNull: false,
   },

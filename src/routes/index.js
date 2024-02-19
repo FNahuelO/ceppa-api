@@ -3,7 +3,6 @@ import {
   addMagazine,
   deleteMagazine,
   editMagazine,
-  getFile,
   getMagazines,
 } from '../controllers/admin/admin.controllers.js'
 import {
@@ -43,7 +42,5 @@ router.delete('/magazine/:id', deleteMagazine)
 router.post('/login', login)
 
 router.post('/register', register)
-
-router.get('/get-file', getFile)
 
 router.post('/send-email', sendEmail)
