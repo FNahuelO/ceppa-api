@@ -124,7 +124,7 @@ export const sendEmail = (req, res) => {
     port: 587,
     secure: false,
     auth: {
-      user: 'franconawel@gmail.com',
+      user: 'fosorio.developer@gmail.com',
       pass: EMAIL_PASSWORD,
     },
   })
