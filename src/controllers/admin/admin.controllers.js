@@ -1,6 +1,7 @@
 import { deleteFileCloudinary, uploadImage } from '../../config/cloudinary.js'
 import { deleteFileStorage, uploadFile } from '../../config/storage.js'
 import Magazine from '../../models/Magazine.js'
+import Text from '../../models/Text.js'
 
 const { AWS_BASE_URL } = process.env
 
@@ -110,6 +111,85 @@ export const deleteMagazine = async (req, res) => {
     })
   } catch (error) {
     console.error('Error al eliminar la revista:', error)
+    res.status(500).json({ error: 'Error al eliminar la revista' })
+  }
+}
+
+export const getTexts = async (req, res) => {
+  try {
+    const data = await Text.findAll()
+    res.status(200).json({
+      data: data,
+      success: true,
+      message: 'Textos listados exitosamente.',
+    })
+  } catch (error) {
+    console.error('Error al listar textos:', error)
+    return res.status(500).json({ error: 'Error en el servidor.' })
+  }
+}
+
+export const addText = async (req, res) => {
+  const { label } = req.body
+
+  try {
+    await Text.create({
+      label,
+    })
+
+    return res.status(200).json({
+      data: null,
+      success: true,
+      message: 'Texto creado exitosamente.',
+    })
+  } catch (error) {
+    console.error('Error al agregar el texto:', error)
+    return res.status(500).json({ error: 'Error en el servidor.' })
+  }
+}
+
+export const editText = async (req, res) => {
+  const { label } = req.body
+
+  try {
+    let currentText = await Text.findByPk(id)
+
+    if (!currentText) {
+      return res.status(404).json({ error: 'Texto no encontrada' })
+    }
+
+    currentText.label = label
+
+    await currentText.save()
+
+    return res.status(200).json({
+      data: null,
+      success: true,
+      message: 'Texto actualizado exitosamente.',
+    })
+  } catch (error) {
+    console.error('Error al editar texto:', error)
+    return res.status(500).json({ error: 'Error en el servidor.' })
+  }
+}
+
+export const deleteText = async (req, res) => {
+  const { id } = req.params
+  try {
+    const currentText = await Text.findByPk(id)
+    if (!currentText) {
+      return res.status(404).json({ error: 'Revista no encontrada' })
+    }
+
+    await currentText.destroy()
+
+    return res.status(200).json({
+      data: null,
+      success: true,
+      message: 'Texto eliminado exitosamente',
+    })
+  } catch (error) {
+    console.error('Error al eliminar la texto:', error)
     res.status(500).json({ error: 'Error al eliminar la revista' })
   }
 }

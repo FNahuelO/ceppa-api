@@ -1,9 +1,13 @@
 import { Router } from 'express'
 import {
   addMagazine,
+  addText,
   deleteMagazine,
+  deleteText,
   editMagazine,
+  editText,
   getMagazines,
+  getTexts,
 } from '../controllers/admin/admin.controllers.js'
 import {
   login,
@@ -38,6 +42,14 @@ router.get('/get-magazines', getMagazines)
 router.put('/magazine/:id', editMagazine)
 
 router.delete('/magazine/:id', deleteMagazine)
+
+router.get('/get-texts', getTexts)
+
+router.post('/add-text', addText)
+
+router.put('/text/:id', editText)
+
+router.delete('/text/:id', deleteText)
 
 router.post('/login', login)
 
