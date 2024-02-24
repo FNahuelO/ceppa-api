@@ -149,7 +149,7 @@ export const addText = async (req, res) => {
 }
 
 export const editText = async (req, res) => {
-  const { label } = req.body
+  const { id } = req.body
 
   try {
     let currentText = await Text.findByPk(id)
