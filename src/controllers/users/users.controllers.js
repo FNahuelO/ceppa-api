@@ -131,7 +131,7 @@ export const sendEmail = (req, res) => {
 
   const mailOptions = {
     from: correo,
-    to: 'frannahuelosorio@gmail.com',
+    to: 'ceppa.comunidad@gmail.com',
     subject: 'Nuevo mensaje desde el formulario de contacto',
     text: `
     Nombre: ${nombre}
