@@ -10,7 +10,11 @@ import './config/sequelize.js'
 
 export const app = express()
 
-app.use(fileUpload())
+app.use(
+  fileUpload({
+    limits: { fileSize: 20 * 1024 * 1024 },
+  }),
+)
 
 app.use(express.json())
 
