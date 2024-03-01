@@ -24,6 +24,7 @@
     "express-fileupload": "^1.4.3",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^6.9.9",
+    "pdf-lib": "^1.17.1",
     "pg": "^8.11.3",
     "sequelize": "^6.33.0",
     "sequelize-cli": "^6.6.1",

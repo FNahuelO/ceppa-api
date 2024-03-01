@@ -7,6 +7,7 @@ import {
 import { config } from 'dotenv'
 import fs from 'fs'
 import path from 'path'
+import { PDFDocument } from 'pdf-lib'
 
 config()
 
@@ -21,10 +22,16 @@ const s3 = new S3Client({
 })
 
 export const uploadFile = async (file) => {
+  const existingPdfBytes = file.data
+
+  const pdfDoc = await PDFDocument.load(existingPdfBytes)
+
+  const pdfBytes = await pdfDoc.save({ useObjectStreams: true })
+
   const params = {
     Bucket: 'ceppa-storage',
     Key: file.name,
-    Body: file.data, // Pasar el stream directamente como el cuerpo del objeto
+    Body: pdfBytes, // Pasar el stream directamente como el cuerpo del objeto
     ContentType: 'application/pdf',
     ACL: 'public-read',
   }
