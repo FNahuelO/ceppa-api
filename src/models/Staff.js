@@ -1,4 +1,4 @@
-import { STRING, UUID, UUIDV4 } from 'sequelize'
+import { STRING, UUID, TEXT, UUIDV4 } from 'sequelize'
 import sequelize from '../config/sequelize.js'
 
 const Staff = sequelize.define('Staff', {
@@ -16,7 +16,7 @@ const Staff = sequelize.define('Staff', {
     allowNull: false,
   },
   description: {
-    type: STRING,
+    type: TEXT,
     allowNull: false,
   },
   imageUrl: {
