@@ -6,21 +6,19 @@ import Text from '../../models/Text.js'
 const { AWS_BASE_URL } = process.env
 
 export const addMagazine = async (req, res) => {
-  const { title } = req.body
+  const { title, archive } = req.body
 
   try {
-    const archive = req.files['archive']
     const currentImage = req.files['image']
-    const response = await uploadFile(archive)
-    console.log(response)
+
     const image = await uploadImage(currentImage)
-    if (image && response) {
+    if (image) {
       await Magazine.create({
         title,
         imageUrl: image,
         imageName: currentImage.name,
-        archive: `${AWS_BASE_URL}${archive.name}`,
-        name: archive.name,
+        archive: `${AWS_BASE_URL}${archive}`,
+        name: archive,
       })
     }
 
