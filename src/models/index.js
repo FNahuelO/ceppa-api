@@ -2,9 +2,10 @@ import StaffModel from './Staff.js'
 import UserModel from './Users.js'
 import Magazine from './Magazine.js'
 import TextModel from './Text.js'
+import Curso from './Cursos.js'
 import sequelize from '../config/sequelize.js'
 
-const modelDefiners = [StaffModel, UserModel, Magazine, TextModel]
+const modelDefiners = [StaffModel, UserModel, Magazine, TextModel, Curso]
 
 // Injectamos la conexión (sequelize) a todos los modelos
 modelDefiners?.forEach((model) => new model(sequelize))

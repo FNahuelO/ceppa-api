@@ -1,5 +1,6 @@
 import { deleteFileCloudinary, uploadImage } from '../../config/cloudinary.js'
 import { deleteFileStorage, uploadFile } from '../../config/storage.js'
+import Curso from '../../models/Cursos.js'
 import Magazine from '../../models/Magazine.js'
 import Text from '../../models/Text.js'
 
@@ -190,5 +191,119 @@ export const deleteText = async (req, res) => {
   } catch (error) {
     console.error('Error al eliminar la texto:', error)
     res.status(500).json({ error: 'Error al eliminar la revista' })
+  }
+}
+
+
+export const addCurso = async (req, res) => {
+  const { title, startDate, endDate, schedules, certification, mode } = req.body
+
+  try {
+    const currentImage = req.files['photo']
+
+    const image = await uploadImage(currentImage)
+    if (image) {
+      await Curso.create({
+        title,
+        startDate,
+        endDate,
+        schedules,
+        certification,
+        mode,
+        class: req.body.class,
+        imageUrl: image,
+        imageName: currentImage.name,
+      })
+    }
+
+    return res.status(200).json({
+      data: null,
+      success: true,
+      message: 'Curso creado exitosamente.',
+    })
+  } catch (error) {
+    console.error('Error al agregar el curso:', error)
+    return res.status(500).json({ error: 'Error en el servidor.' })
+  }
+}
+
+export const getCursos = async (req, res) => {
+  try {
+    const data = await Curso.findAll()
+    res.status(200).json({
+      data: data,
+      success: true,
+      message: 'Cursos listadas exitosamente.',
+    })
+  } catch (error) {
+    console.error('Error al listar los cursos:', error)
+    return res.status(500).json({ error: 'Error en el servidor.' })
+  }
+}
+
+export const editCurso = async (req, res) => {
+  const { id } = req.params
+  const { title, date, schedules, certification, mode } = req.body
+
+  try {
+    let currentCurso = await Curso.findByPk(id)
+
+    if (!currentCurso) {
+      return res.status(404).json({ error: 'Curso no encontrado' })
+    }
+
+    // Si se proporciona una nueva imagen, la subimos y actualizamos el campo de imagen
+    if (req.files && req.files['image']) {
+      const image = await uploadImage(req.files['image'])
+      if (image) {
+        currentCurso.imageUrl = image
+        currentCurso.imageName = req.files['image']?.name
+      } else {
+        return res.status(500).json({ error: 'Error al cargar el curso.' })
+      }
+    }
+
+    // Actualizamos los demás campos
+    currentCurso.title = title
+    currentCurso.date = date
+    currentCurso.schedules = schedules
+    currentCurso.certification = certification
+    currentCurso.mode = mode
+    currentCurso.class = req.body.class
+    
+
+    await currentCurso.save()
+
+    return res.status(200).json({
+      data: null,
+      success: true,
+      message: 'Curso actualizado exitosamente.',
+    })
+  } catch (error) {
+    console.error('Error al editar el curso:', error)
+    return res.status(500).json({ error: 'Error en el servidor.' })
+  }
+}
+
+export const deleteCurso = async (req, res) => {
+  const { id } = req.params
+  try {
+    const curso = await Curso.findByPk(id)
+    if (!curso) {
+      return res.status(404).json({ error: 'Curso no encontrado' })
+    }
+
+    await deleteFileCloudinary(curso.imageName)
+
+    await curso.destroy()
+
+    return res.status(200).json({
+      data: null,
+      success: true,
+      message: 'Curso eliminado exitosamente',
+    })
+  } catch (error) {
+    console.error('Error al eliminar el curso:', error)
+    res.status(500).json({ error: 'Error al eliminar el curso' })
   }
 }
