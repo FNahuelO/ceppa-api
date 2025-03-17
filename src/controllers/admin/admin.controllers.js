@@ -253,11 +253,11 @@ export const editCurso = async (req, res) => {
     }
 
     // Si se proporciona una nueva imagen, la subimos y actualizamos el campo de imagen
-    if (req.files && req.files['image']) {
-      const image = await uploadImage(req.files['image'])
+    if (req.files && req.files['photo']) {
+      const image = await uploadImage(req.files['photo'])
       if (image) {
         currentCurso.imageUrl = image
-        currentCurso.imageName = req.files['image']?.name
+        currentCurso.imageName = req.files['photo']?.name
       } else {
         return res.status(500).json({ error: 'Error al cargar el curso.' })
       }
